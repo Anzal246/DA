@@ -1,11 +1,8 @@
 pipeline {
     agent any
 
-    tools {
-        nodejs 'NodeJS-18'
-    }
-
     stages {
+
         stage('Clone Code') {
             steps {
                 git branch: 'main',
@@ -15,23 +12,29 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                sh 'npm install'
+                dir('welcome-react') {
+                    sh 'node -v'
+                    sh 'npm -v'
+                    sh 'npm install'
+                }
             }
         }
 
         stage('Build React App') {
             steps {
-                sh 'npm run build'
+                dir('welcome-react') {
+                    sh 'npm run build'
+                }
             }
         }
     }
 
     post {
-        success {
-            echo 'React build successful 🎉'
-        }
         failure {
-            echo 'Build failed ❌'
+            echo "Build failed ❌"
+        }
+        success {
+            echo "Build successful ✅"
         }
     }
 }
